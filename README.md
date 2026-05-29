@@ -44,6 +44,23 @@ Finally, you can proxy a request to another server using e.g.:
 curl -i localhost:3000/proxy?url=https://bytecodealliance.org/
 ```
 
+## What about C++ exceptions?
+
+As of this writing, Spin does not yet support the WebAssembly Exception Handling
+proposal.  [Wasmtime](https://github.com/bytecodealliance/wasmtime), the
+WebAssembly runtime on which Spin is based, has experimental support for that
+proposal; once that support has stabilized, Spin will be updated to use it.
+
+Meanwhile, you can make use of the experimental support in Wasmtime by building
+and running with the appropriate flags:
+
+```
+wasm32-wasip2-clang++ -fwasm-exceptions -mllvm -wasm-use-legacy-eh=false -std=c++23 \
+  example.cpp bindings/http_trigger.cpp bindings/http_trigger_component_type.o -lunwind \
+  -o example.wasm
+wasmtime serve --addr 0.0.0.0:3000 -Scli -Wexceptions example.wasm
+```
+
 ## (Optional) Regenerating the bindings
 
 The `bindings` folder in this repository contains C++ bindings generated using
@@ -62,7 +79,7 @@ wit-bindgen cpp spin-3.4.0/wit --out-dir bindings -w http-trigger
 Note that we use the WIT files from an older Spin v3.4.0 release since
 `wit-bindgen-cpp` does not yet support newer WIT features as of this writing.
 
-## (Optional) Update the dependencies
+## (Optional) Updating the dependencies
 
 This example relies on [Ada](https://github.com/ada-url/ada) for parsing URLs.
 You can update that dependency using:
@@ -74,22 +91,4 @@ for file in ada.h ada.cpp; do \
   (cd deps && curl -OL curl -OL https://github.com/ada-url/ada/releases/download/v3.4.4/$file); \
 done 
 ```
-
-## What about C++ exceptions?
-
-As of this writing, Spin does not yet support the WebAssembly Exception Handling
-proposal.  [Wasmtime](https://github.com/bytecodealliance/wasmtime), the
-WebAssembly runtime on which Spin is based, has experimental support for that
-proposal; once that support has stabilized, Spin will be updated to use it.
-
-Meanwhile, you can make use of the experimental support in Wasmtime by building
-and running with the appropriate flags:
-
-```
-wasm32-wasip2-clang++ -fwasm-exceptions -mllvm -wasm-use-legacy-eh=false -std=c++23 \
-  example.cpp bindings/http_trigger.cpp bindings/http_trigger_component_type.o -lunwind \
-  -o example.wasm
-wasmtime serve --addr 0.0.0.0:3000 -Scli -Wexceptions example.wasm
-```
-
 
