@@ -10,4 +10,5 @@ component = "example"
 
 [component.example]
 source = "example.wasm"
-build.command = "wasm32-wasip2-clang++ -fno-exceptions -std=c++23 -I bindings example.cpp bindings/http_trigger.cpp bindings/http_trigger_component_type.o -o example.wasm"
+allowed_outbound_hosts = ["http://*", "https://*"]
+build.command = "wasm32-wasip2-clang++ -fno-exceptions -std=c++23 example.cpp bindings/http_trigger.cpp bindings/http_trigger_component_type.o -o example.wasm"
