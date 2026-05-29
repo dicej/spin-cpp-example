@@ -20,6 +20,7 @@ using wasi::http0_2_0::types::Scheme;
 using wasi::io0_2_0::streams::StreamError;
 
 namespace {
+    
 std::span<const uint8_t> span(const char* string)
 {
     return std::span(reinterpret_cast<const uint8_t*>(string), strlen(string));
@@ -92,6 +93,7 @@ std::vector<std::tuple<std::string_view, std::span<const uint8_t>>> header_views
 } // namespace
 
 namespace exports::wasi::http0_2_0::incoming_handler {
+    
 void Handle(IncomingRequest&& request, ResponseOutparam&& response_out)
 {
     auto method = request.Method();
@@ -223,4 +225,5 @@ void Handle(IncomingRequest&& request, ResponseOutparam&& response_out)
         send_status(std::move(response_out), 400);
     }
 }
+
 } // namespace exports::wasi::http0_2_0::incoming_handler
